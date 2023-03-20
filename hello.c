@@ -14,5 +14,7 @@ int main()
   /* FIXME: fix me!*/
   char *p = f("hello, world\n");
   printf("%s", p);
+  free(p);
+  printf("%s", p);
   return 0;
 }
