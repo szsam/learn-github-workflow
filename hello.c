@@ -2,6 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+void test_null_check() {
+    char *p = malloc(100);
+    char *q = calloc(100, 2);
+    free(p);
+    free(q);
+}
+
 char *f(char *s) {
   char *buf = malloc(80);
   strcpy(buf, "s: ");
