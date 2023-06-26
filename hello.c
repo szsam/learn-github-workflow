@@ -16,6 +16,10 @@ char *f(char *s) {
   return buf;
 }
 
+int overflow_check(long a, size_t b) {
+  return a + b > a;
+}
+
 int main()
 {
   /* FIXME: fix me!*/
