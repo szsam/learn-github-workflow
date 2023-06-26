@@ -16,8 +16,10 @@ char *f(char *s) {
   return buf;
 }
 
-int overflow_check(long a, size_t b) {
-  return a + b > a;
+void overflow_check(long a, size_t b) {
+  if (a + b > a) {
+    printf("overflow!");
+  }
 }
 
 int main()
