@@ -22,6 +22,20 @@ void overflow_check(long a, size_t b) {
   }
 }
 
+void pass_by_reference(int *x) {
+  *x = 2;
+}
+
+void test_unintialize_local() {
+  int x;
+  int y = 1;
+  int z;
+
+  pass_by_reference(&z);
+
+  printf("%d %d %d", x, y, z);
+}
+
 int main()
 {
   /* FIXME: fix me!*/
@@ -29,5 +43,6 @@ int main()
   printf("%s", p);
   free(p);
   printf("%s", p);
+  test_unintialize_local();
   return 0;
 }
