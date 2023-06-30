@@ -37,17 +37,17 @@ void test_unintialize_local() {
 }
 
 void test_unintialize_local_path_sensitive() {
-  volatile int ret = 99;
+  int ret = rand() % 2;
   int x;
   int y;
   int z;
 
-  if (ret == 99) {
+  if (ret == 0) {
     y = 1;
     pass_by_reference(&z);
   }
 
-  if (ret == 99) {
+  if (ret == 0) {
     printf("%d %d %d\n", x, y, z);
   }
 }
