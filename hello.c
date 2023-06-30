@@ -33,7 +33,23 @@ void test_unintialize_local() {
 
   pass_by_reference(&z);
 
-  printf("%d %d %d", x, y, z);
+  printf("%d %d %d\n", x, y, z);
+}
+
+void test_unintialize_local_path_sensitive() {
+  volatile int ret = 99;
+  int x;
+  int y;
+  int z;
+
+  if (ret == 99) {
+    y = 1;
+    pass_by_reference(&z);
+  }
+
+  if (ret == 99) {
+    printf("%d %d %d\n", x, y, z);
+  }
 }
 
 int main()
@@ -44,5 +60,6 @@ int main()
   free(p);
   printf("%s", p);
   test_unintialize_local();
+  test_unintialize_local_path_sensitive();
   return 0;
 }
