@@ -52,6 +52,8 @@ void test_unintialize_local_path_sensitive() {
   }
 }
 
+void use(float);
+
 void switch_cases(const char *data) {
 	float a, b, c;
 
