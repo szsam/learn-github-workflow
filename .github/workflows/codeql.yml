@@ -53,7 +53,7 @@ jobs:
 
         # Details on CodeQL's query packs refer to : https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
         queries: +security-and-quality
-        tools: https://github.com/github/codeql-action/releases/download/codeql-bundle-v2.13.4/codeql-bundle-linux64.tar.gz
+        tools: https://github.com/github/codeql-action/releases/download/codeql-bundle-v2.13.5/codeql-bundle-linux64.tar.gz
 
     - run: env
 
