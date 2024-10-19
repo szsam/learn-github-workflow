@@ -52,6 +52,41 @@ void test_unintialize_local_path_sensitive() {
   }
 }
 
+void switch_cases(const char *data) {
+	float a, b, c;
+
+	switch (sscanf(data, "%f %f %f", &a, &b, &c)) {
+		case 2:
+			use(a); // GOOD
+			use(b); // GOOD
+			break;
+		case 3:
+			use(a); // GOOD
+			use(b); // GOOD
+			use(c); // GOOD
+			break;
+		default:
+			break;
+	}
+
+	float d, e, f;
+
+	switch (sscanf(data, "%f %f %f", &d, &e, &f)) {
+		case 2:
+			use(d); // GOOD
+			use(e); // GOOD
+			use(f); // BAD
+			break;
+		case 3:
+			use(d); // GOOD
+			use(e); // GOOD
+			use(f); // GOOD
+			break;
+		default:
+			break;
+	}
+}
+
 int main()
 {
   /* FIXME: fix me!*/
