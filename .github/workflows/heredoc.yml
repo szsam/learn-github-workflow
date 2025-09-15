@@ -1,42 +1,22 @@
-name: Vulnerable Here-Doc Demo
-
+name: Vulnerable Here-Doc via Issues
 on:
-  pull_request:
+  issues:
+    types: [opened, edited]
 
 jobs:
-  vulnerable:
+  demo:
     runs-on: ubuntu-latest
     steps:
-      - name: Show context
-        run: |
-          echo "PR title: ${{ github.event.pull_request.title }}"
-          echo "We will now parse the PR body using a here-doc (VULNERABLE)."
-
-      - name: Parse PR body via here-doc (vulnerable)
+      - name: Parse issue body with here-doc (VULNERABLE)
         shell: bash
         run: |
-          # Important: turn OFF 'exit on error' so we can keep running after the inevitable
-          # 'EOF: command not found' that occurs when the attacker ends the here-doc early.
           set +e
-
           REGEX='#### URL to issue\s*\n(https:\/\/biomage\.atlassian\.net\/browse\/BIOMAGE-[0-9]+|N\/A)'
 
           echo "::group::Running grep with here-doc (vulnerable)"
-          echo "REGEX: $REGEX"
-          echo "---- begin here-doc ----"
-
-          # The PR body is spliced in *verbatim* here by GitHub Actions.
-          # If the PR body contains a line equal to 'EOF', the here-doc ends early,
-          # and remaining PR body lines are executed as shell code.
           grep -Po "$REGEX" <<'EOF'
-          ${{ github.event.pull_request.body }}
-          EOF
-
-          echo "---- end here-doc ----"
-          echo "::endgroup::"
-
-          echo "::group::Demonstration continues even if errors occurred"
-          echo "If an injected payload created injected.txt, we'll show it below."
+${{ github.event.issue.body }}
+EOF
           echo "::endgroup::"
 
       - name: Show proof file (if present)
@@ -46,7 +26,6 @@ jobs:
           if [[ -f injected.txt ]]; then
             echo "Found injected.txt (proof of code execution):"
             ls -l injected.txt
-            echo "Contents:"
             cat injected.txt
           else
             echo "No injected.txt present."
