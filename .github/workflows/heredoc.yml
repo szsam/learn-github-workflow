@@ -15,8 +15,8 @@ jobs:
 
           echo "::group::Running grep with here-doc (vulnerable)"
           grep -Po "$REGEX" <<'EOF'
-${{ github.event.issue.body }}
-EOF
+          ${{ github.event.issue.body }}
+          EOF
           echo "::endgroup::"
 
       - name: Show proof file (if present)
