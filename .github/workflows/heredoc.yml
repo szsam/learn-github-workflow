@@ -1,4 +1,4 @@
-name: Here-Doc Breakout (Minimal)
+name: Here-Doc Breakout via grep (Minimal)
 
 on:
   issues:
@@ -8,11 +8,16 @@ jobs:
   demo:
     runs-on: ubuntu-latest
     steps:
-      - name: SAFE — print issue body via here-string
+      - name: SAFE — grep via env var + pipe
         shell: bash
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
         run: |
-          echo "=== SAFE PARSE (here-string) ==="
-          cat <<<"${{ github.event.issue.body }}"
+          set -euo pipefail
+          # Extract whatever follows 'VALUE:' on a line (PCRE \K keeps only the right side)
+          REGEX='^VALUE:\s*\K.*'
+          echo "=== SAFE PARSE ==="
+          printf '%s\n' "$ISSUE_BODY" | grep -Po "$REGEX" || echo "(no match)"
           echo "=== DONE SAFE ==="
 
       - name: Check that no injected file exists (should be absent)
@@ -24,16 +29,20 @@ jobs:
             echo "OK: injected.txt not present."
           fi
 
-      - name: VULNERABLE — print issue body via here-doc
+      - name: VULNERABLE — grep via here-doc (delimiter breakout)
         shell: bash
+        continue-on-error: true   # let the job continue even if the step errors after breakout
         run: |
           echo "=== VULNERABLE PARSE (here-doc) ==="
-          cat <<'EOF'
+          REGEX='^VALUE:\s*\K.*'
+          # If the issue body contains a line exactly 'EOF', the here-doc ends early
+          # and subsequent lines in the body are executed as shell commands.
+          grep -Po "$REGEX" <<'EOF'
             ${{ github.event.issue.body }}
           EOF
           echo "=== DONE VULNERABLE ==="
 
-      - name: Check for injected file (runs even if previous step failed)
+      - name: Check for injected file (proof of code exec)
         if: ${{ always() }}
         run: |
           if [[ -f injected.txt ]]; then
