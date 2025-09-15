@@ -1,4 +1,5 @@
-name: Vulnerable Here-Doc via Issues
+name: Here-Doc Breakout (Minimal)
+
 on:
   issues:
     types: [opened, edited]
@@ -7,27 +8,39 @@ jobs:
   demo:
     runs-on: ubuntu-latest
     steps:
-      - name: Parse issue body with here-doc (VULNERABLE)
+      - name: SAFE — print issue body via here-string
         shell: bash
         run: |
-          set +e
-          REGEX='#### URL to issue\s*\n(https:\/\/biomage\.atlassian\.net\/browse\/BIOMAGE-[0-9]+|N\/A)'
+          echo "=== SAFE PARSE (here-string) ==="
+          cat <<<"${{ github.event.issue.body }}"
+          echo "=== DONE SAFE ==="
 
-          echo "::group::Running grep with here-doc (vulnerable)"
-          grep -Po "$REGEX" <<\EOF
-          ${{ github.event.issue.body }}
+      - name: Check that no injected file exists (should be absent)
+        run: |
+          if [[ -f injected.txt ]]; then
+            echo "::error::Unexpected injected.txt present after SAFE parse."
+            exit 1
+          else
+            echo "OK: injected.txt not present."
+          fi
+
+      - name: VULNERABLE — print issue body via here-doc
+        shell: bash
+        run: |
+          echo "=== VULNERABLE PARSE (here-doc) ==="
+          cat <<'EOF'
+            ${{ github.event.issue.body }}
           EOF
-          echo "::endgroup::"
+          echo "=== DONE VULNERABLE ==="
 
-      - name: Show proof file (if present)
+      - name: Check for injected file (runs even if previous step failed)
         if: ${{ always() }}
         run: |
-          echo "::group::Checking for injected file"
           if [[ -f injected.txt ]]; then
             echo "Found injected.txt (proof of code execution):"
             ls -l injected.txt
+            echo "Contents:"
             cat injected.txt
           else
             echo "No injected.txt present."
           fi
-          echo "::endgroup::"
