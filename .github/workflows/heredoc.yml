@@ -14,7 +14,7 @@ jobs:
           REGEX='#### URL to issue\s*\n(https:\/\/biomage\.atlassian\.net\/browse\/BIOMAGE-[0-9]+|N\/A)'
 
           echo "::group::Running grep with here-doc (vulnerable)"
-          grep -Po "$REGEX" <<'EOF'
+          grep -Po "$REGEX" <<\EOF
           ${{ github.event.issue.body }}
           EOF
           echo "::endgroup::"
