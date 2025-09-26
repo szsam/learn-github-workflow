@@ -38,7 +38,7 @@ jobs:
           # If the issue body contains a line exactly 'EOF', the here-doc ends early
           # and subsequent lines in the body are executed as shell commands.
           grep -Po "$REGEX" <<\EOF
-            ${{ github.event.issue.body }}
+          ${{ github.event.issue.body }}
           EOF
           echo "=== DONE VULNERABLE ==="
 
