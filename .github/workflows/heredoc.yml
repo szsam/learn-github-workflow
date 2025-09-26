@@ -31,7 +31,7 @@ jobs:
 
       - name: VULNERABLE — grep via here-doc (delimiter breakout)
         shell: bash
-        continue-on-error: true   # let the job continue even if the step errors after breakout
+        #continue-on-error: true   # let the job continue even if the step errors after breakout
         run: |-
           echo "=== VULNERABLE PARSE (here-doc) ==="
           REGEX='^VALUE:\s*\K.*'
