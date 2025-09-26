@@ -1,0 +1,38 @@
+name: Demo pcregrep heredoc
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-pcregrep:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install pcregrep
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pcregrep
+
+      - name: Run heredoc + pcregrep demo
+        shell: bash
+        run: |
+          REGEX="#### URL to issue\s?\r\n(https:\/\/biomage\.atlassian\.net\/browse\/BIOMAGE-[0-9]+|N\/A)"
+
+          echo "REGEX to test against:"
+          echo "$REGEX"
+          echo "Now looking at regex result:"
+
+          pcregrep -o1 -M "$REGEX" <<\EOF
+          #### URL to issue
+          https://biomage.atlassian.net/browse/BIOMAGE-1234
+          echo "Here is malicious code 1..."
+          echo "Here is malicious code 1...">&2
+          EOF
+
+          echo pwned > injected.txt
+          echo "Here is malicious code 2..."
+          echo "Here is malicious code 2...">&2
+          echo "Now looking at regex result for second block (cleaner input):"
+
+          #### URL to issue
+          https://biomage.atlassian.net/browse/BIOMAGE-5678
+          EOF
