@@ -20,6 +20,11 @@ jobs:
           printf '%s\n' "$ISSUE_BODY" | grep -Po "$REGEX" || echo "(no match)"
           echo "=== DONE SAFE ==="
 
+          echo "=== HEXDUMP (canonical) ==="
+          # -C = canonical: offsets, hex bytes, ASCII gutter
+          # We avoid echo to preserve content; printf doesn't add extra newline here.
+          printf '%s' "$ISSUE_BODY" | hexdump -C || true
+
       - name: Check that no injected file exists (should be absent)
         run: |
           if [[ -f injected.txt ]]; then
